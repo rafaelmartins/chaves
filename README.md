@@ -3,7 +3,7 @@
 A web YouTube player that shows predefined videos in random order, but respecting sequenced videos.
 This means that if some videos don't make sense for viewers if not played in a specific ordering, it will be respected.
 
-[https://chaves.rgm.io/](Live demo)
+[Live demo](https://chaves.rgm.io/)
 
 
 ## Configuration
