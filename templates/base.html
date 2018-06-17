@@ -39,6 +39,7 @@
                     if (xhr.status === 200) {
                         videos = JSON.parse(xhr.responseText);
                         player = new YT.Player('player', {
+                            host: 'https://www.youtube-nocookie.com',
                             videoId: videos.shift(),
                             events: {
                                 'onReady': onPlayerReady,
