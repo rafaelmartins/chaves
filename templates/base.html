@@ -32,26 +32,27 @@
 
             var player, videos;
 
-            function onYouTubeIframeAPIReady() {
+            function getVideos() {
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', '{{ url_for('.videos') }}');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        videos = JSON.parse(xhr.responseText);
-                        player = new YT.Player('player', {
-                            host: 'https://www.youtube-nocookie.com',
-                            videoId: videos.shift(),
-                            events: {
-                                'onReady': onPlayerReady,
-                                'onStateChange': onPlayerStateChange
-                            }
-                        });
+                xhr.open('GET', '{{ url_for('.videos') }}', false);
+                xhr.send(null);
+                if (xhr.status !== 200) {
+                    alert('Failed to fetch videos! You can try to refresh the page.');
+                    return null;
+                }
+                return JSON.parse(xhr.responseText);
+            }
+
+            function onYouTubeIframeAPIReady() {
+                videos = getVideos();
+                player = new YT.Player('player', {
+                    host: 'https://www.youtube-nocookie.com',
+                    videoId: videos.shift(),
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
                     }
-                    else {
-                        alert('Ajax request failed!');
-                    }
-                };
-                xhr.send();
+                });
             }
 
             function onPlayerReady(event) {
@@ -60,6 +61,9 @@
 
             function onPlayerStateChange(event) {
                 if (event.data == YT.PlayerState.ENDED) {
+                    if (videos.length === 0) {
+                        videos = getVideos();
+                    }
                     player.loadVideoById(videos.shift());
                 }
             }
